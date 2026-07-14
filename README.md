@@ -201,3 +201,100 @@ En "Health checks"
 
 Clic en "Create target group"
 
+![alt text](<Resource/image copy 13.png>)
+
+**Crear Application Load Balancer**
+
+![alt text](<Resource/image copy 14.png>)
+
+| Campo                  | Valor                |
+| ---------------------- | -------------------- |
+| **Load balancer name** | `alb-scalability-ha` |
+| **Scheme**             | `Internet-facing`    |
+| **IP address type**    | `IPv4`               |
+
+Network mapping
+
+| Campo        | Valor                                                                        |
+| ------------ | ---------------------------------------------------------------------------- |
+| **VPC**      | VPC                                             |
+| **Mappings** |  **DOS zonas de disponibilidad** (`us-east-1a` y `us-east-1b`) |
+|              | Para cada AZ, **subnet pública**                              |
+
+
+Security groups
+
+| Campo               | Valor                                                                       |
+| ------------------- | --------------------------------------------------------------------------- |
+| **Security groups** | **`sg-alb-scalability`** |
+
+Listeners and routing
+
+| Campo              | Valor                                             |
+| ------------------ | ------------------------------------------------- |
+| **Protocol**       | `HTTP`                                            |
+| **Port**           | `80`                                              |
+| **Default action** | `Forward to` → **`tg-scalability-ha`** |
+
+"Create load balancer"
+
+![alt text](<Resource/image copy 15.png>)
+
+**Crear Auto Scaling Group**
+
+![alt text](<Resource/image copy 16.png>)
+
+Choose launch template
+
+| Campo                       | Valor                           |
+| --------------------------- | ------------------------------- |
+| **Auto Scaling group name** | `asg-web-scalability`           |
+| **Launch template**         | `lt-web-scalability` |
+| **Version**                 | `Latest`                        |
+
+
+Choose instance launch options
+
+| Campo                              | Valor                                                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **VPC**                            | Tu VPC por defecto                                                                                    |
+| **Availability Zones and subnets** | `us-east-1a` y `us-east-1b`) |
+
+Configure advanced options
+
+| Campo                                            | Valor                                   |
+| ------------------------------------------------ | --------------------------------------- |
+| **Load balancing**                               | **Attach to an existing load balancer** |
+| **Choose from your load balancer target groups** | `tg-scalability-ha`          |
+
+"Health checks"
+
+| Campo                                            | Valor         |
+| ------------------------------------------------ | ------------- |
+| **Turn on Elastic Load Balancing health checks** | **Enabled** |
+| **Health check grace period**                    | `120` seconds |
+
+Configure group size and scaling policies
+
+| Campo                | Valor |
+| -------------------- | ----- |
+| **Desired capacity** | `2`   |
+| **Minimum capacity** | `2`   |
+| **Maximum capacity** | `3`   |
+
+Scaling policies:
+
+| Campo                | Valor                              |
+| -------------------- | ---------------------------------- |
+| **Scaling policies** | **Target tracking scaling policy** |
+| **Metric type**      | `Average CPU utilization`          |
+| **Target value**     | `50`                               |
+
+"Create Auto Scaling group".
+
+Probar el Load Balancer
+
+http://DNS_DEL_LOAD_BALANCER
+
+![alt text](<Resource/image copy 17.png>)
+
